@@ -1,27 +1,16 @@
 <template>
-  <div id="app">
-    <header>
+  <div class="main-container" >
+    <header class="header-container">
       <button class="btn" @click="toggleModal">Add Stock</button>
-      <button class="btn">Refresh</button>
+      <button class="btn" @click="refresh">Refresh</button>
     </header>
-    <Portfolio></Portfolio>
-    <div class="wrapper">
-      <div v-if="showModal" class="modal-container">
-      <input type="text" v-model="search">
-      <div v-for="coin in allCoins" :key="coin.symbol">
-        <div v-if="coin.added">
-          <AddedCoin :coin="coin"></AddedCoin>
-        </div>
-        <div v-else>
-          <NewCoin :coin="coin"></NewCoin>
-        </div>
-      </div>
+    <div class="container">
+      <Portfolio v-if="hasAddedCoins"></Portfolio>
+      <PieChart></PieChart>
     </div>
-    <div class="pie-chart-container">
-      <!-- <PieChart></PieChart> -->
+    <div v-if="showModal" class="modal-container">
+      <Modal @closeModal="closeModal"></Modal>
     </div>
-    </div>
-    
   </div>
 
 </template>
@@ -32,81 +21,92 @@ import PieChart from './components/PieChart.vue'
 import AddedCoin from './components/AddedCoin.vue';
 import NewCoin from './components/NewCoin.vue';
 import Portfolio from "./components/Portfolio.vue"
-import { mapState } from 'vuex';
+import Modal from  "./components/Modal.vue"
 
 export default {
   name: 'App',
   mounted() {
     this.$store.dispatch("loadCoins")
+    if(localStorage.addedCoinsArr) {
+      this.$store.dispatch("loadAddedCoinsFromLocalStorage", JSON.parse(localStorage.addedCoinsArr))
+    }
+    setInterval(() => {
+      this.$store.dispatch("loadCoins")
+    }, 1200000);
   },
-
+  watch: {
+        addedCoinsArr: {
+          handler(addedCoinsList) {
+            localStorage.addedCoinsArr = JSON.stringify(addedCoinsList)
+          },
+          deep: true
+        },
+  },
   data() {
     return {
       showModal: false,
-      search: "",
-      addedCoins: new Set()
     }
   },
-
   components: {
     PieChart,
     AddedCoin,
     NewCoin,
     Portfolio,
+    Modal
   },
   methods: {
     toggleModal() {
       this.showModal = !this.showModal
     },
- 
-  },
+    refresh() {
+      this.$store.dispatch("loadCoins")
+    },
+    closeModal() {
+      this.showModal = false;
+    },
+  },  
+
   computed: {
-  ...mapState([
-    "coins",
-    "addedCoinsArr"
-  ]),
-  allCoins() {
-    return this.coins
-      .concat(this.addedCoinsArr)
-      .filter(coin => coin.symbol.toLowerCase().includes(this.search.toLowerCase()))
-      .reduce((unique, item) => unique.find(coin => coin.symbol === item.symbol) ? unique : [...unique, item], []);
+    hasAddedCoins() {
+    return this.$store.state.addedCoinsArr.length > 0;
   }
-
-
-
-// when added the coin in the search list has still add button  
-//   filteredCoins() {
-//     return this.coins.filter(coin => {
-//         return !this.addedCoins.has(coin.symbol) && coin.symbol.toLowerCase().includes(this.search.toLowerCase());
-//     });
-// }
-
-
-// when added it disappears from searchlist
-  // filteredCoins() {
-  //   return this.coins.filter(coin => {
-  //       const addedCoin = this.addedCoinsArr.find(addedCoin => addedCoin.symbol === coin.symbol);
-  //       return !addedCoin && coin.symbol.toLowerCase().includes(this.search.toLowerCase());
-  //   });
-  // }  
   }
 }
 </script>
 
-<style scoped>
-.modal-container {
-  max-width: 500px;
-}
-.wrapper {
-  display: flex;
-  justify-content: space-between;
-  max-width: 1100px;
-  margin: 0 auto;
-}
+<style>
+  .main-container {
+    height: 100vh;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+  .header-container {
+    background-color: #222222;
+    padding: 20px;
+  }
 
-.pie-chart-container {
-  width: 500px;
-  margin: 25px auto;
-}
+  .modal-container {
+    position: fixed;
+    top: 100px;
+    left: 500px;
+  }
+
+  .container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 50px;
+  }
+  .btn {
+    background-color: #0043B1;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px;
+    font-weight: bold;
+  }
+
+  .btn:hover {
+    cursor: pointer;
+  }
 </style>
 
