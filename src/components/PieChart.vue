@@ -29,7 +29,6 @@ export default {
       }
     }
   },
-
   data() {
     return {
       options: {
@@ -41,7 +40,6 @@ export default {
     }
   },
   mounted() {
-    console.log("pie chart mounted")
     const ctx = document.getElementById("myChart")
     this.myChart = new Chart(ctx, {
     type: 'pie',
