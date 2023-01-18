@@ -11,7 +11,6 @@
             </div>
         </div>
         <div class="btn-container">
-            <button class="update-btn btn">update</button>
             <button @click="removeCoin(coin.symbol)" class="remove-btn btn">remove</button>
         </div>
     </div>
