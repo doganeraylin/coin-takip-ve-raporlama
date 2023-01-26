@@ -1,3 +1,4 @@
+
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
@@ -15,36 +16,39 @@ export const store = new Vuex.Store({
                 return { ...coin, count: 1}
             });
         },
-        addingCoin(state, symbol) {
+        addingCoin(state, {symbol, count}) {
             const singleCoin = state.coins.find(coin => {
                 return coin.symbol == symbol
             })
+            singleCoin.added = true
 
-            const newCoin = {
-                symbol: singleCoin.symbol,
-                lastPrice: singleCoin.lastPrice,
-                weightedAvgPrice: singleCoin.weightedAvgPrice,
-                added: true,
-                count: singleCoin.count
-            }
-            state.addedCoinsArr.push(newCoin)
-            
-        },
-        increment(state, symbol) {
-            const coin = state.coins.find(coin => coin.symbol === symbol);
-            coin.count += 1
             const addedCoin = state.addedCoinsArr.find(coin => coin.symbol === symbol);
-            addedCoin.count += 1
+            if(addedCoin) {
+                addedCoin.count += count
+            } else {
+                const newCoin = {
+                    symbol: singleCoin.symbol,
+                    lastPrice: singleCoin.lastPrice,
+                    weightedAvgPrice: singleCoin.weightedAvgPrice,
+                    added: true,
+                    count: count
+                }
+                state.addedCoinsArr.push(newCoin)
+            }
+            singleCoin.count = count;
         },
-        decrement(state, symbol) {
-            const coin = state.coins.find(coin => coin.symbol === symbol);
-            if(coin.count > 0) {
-                coin.count -= 1
-            }
-            const addedCoin = state.addedCoinsArr.find(coin => coin.symbol === symbol);
-            if(addedCoin.count > 0) {
-                addedCoin.count -= 1
-            }
+        updateCoinCount(state, {symbol, count}) {
+            const singleCoin = state.coins.find(coin => {
+                return coin.symbol == symbol
+            })
+            singleCoin.count = count
+
+            state.addedCoinsArr = state.addedCoinsArr.map(coin => {
+                if (coin.symbol === symbol) {
+                    return {...coin, count};
+                }
+                return coin;
+            });
         },
         removeCoin(state, symbol) {
             state.addedCoinsArr = state.addedCoinsArr.filter(coin => coin.symbol !== symbol);
@@ -72,18 +76,18 @@ export const store = new Vuex.Store({
                     console.log("error")
                 })     
         },
-        loadAddedCoinsFromLocalStorage(context, addedCoins) {
-            context.commit("setAddedCoins", addedCoins)
+        loadAddedCoinsFromLocalStorage({commit}, addedCoins) {
+           commit("setAddedCoins", addedCoins)
         },
         removeAddedCoin({commit}, symbol) {
             commit("removeCoin", symbol);
         },
+        addCoin({commit}, {symbol, count}) {
+            commit("addingCoin", {symbol, count})
+        },
+        updateCoinCount({ commit }, { symbol, count }) {
+            commit("updateCoinCount", { symbol, count });
+        },
         
     },
 });
-
-
-
-
-
-
