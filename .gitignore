@@ -12,3 +12,6 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+README.md
+build/logo.png
+src/assets/logo.png
