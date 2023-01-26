@@ -16,7 +16,7 @@ export default {
       "addedCoinsArr"
     ]),
     chartData() {
-      const colors = ['#f87979', '#f9a65a', '#fcc419', '#fcd917', '#f5e8c8', '#f3e5ab'];
+      const colors = ['#C0DEDD', '#A9F2CB', '#B5F8B1', '#D2FA91', '#F9F871', '#DDAED2'];
       return {
         labels: this.addedCoinsArr.map(coin => coin.symbol),
         datasets: [
@@ -64,7 +64,3 @@ export default {
   }
 </script>
 
-
-<style>
-
-</style>
