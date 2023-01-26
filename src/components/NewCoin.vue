@@ -2,16 +2,14 @@
     <div class="coin-container">
         <p>{{ coin.symbol }}</p>
         <p>{{ coin.lastPrice }}</p>
-        <p>{{ coin. weightedAvgPrice }}</p>
+        <p>{{ coin.weightedAvgPrice }}</p>
+        <button @click="addNewCoin(coin)" class="btn">add</button>
         <div class="quantity-container">
             <p class="count">{{ count }}</p>
             <div class="counter-container">
-                <button @click="increment" class="count-btn">+</button>
-                <button @click="decrement" class="count-btn">-</button>
+            <button @click="increment" class="count-btn">+</button>
+            <button @click="decrement" class="count-btn">-</button>
             </div>
-        </div>
-        <div class="btn-container">
-            <button @click="removeCoin(coin.symbol)" class="remove-btn btn">remove</button>
         </div>
     </div>
 </template>
@@ -19,26 +17,30 @@
 <script>
 
     export default {
-        props: ['coin'],
-        methods: {
-            removeCoin(symbol) {
-            this.$store.dispatch("removeAddedCoin", symbol);
-            },
-            increment() {
-                this.$store.commit("increment", this.coin.symbol);
-            },
-            decrement() {
-                this.$store.commit("decrement", this.coin.symbol);
-            }, 
+
+    props: ['coin'],
+    methods: {
+        addNewCoin(coin) {
+            coin.added = true
+            this.$store.commit("addingCoin", coin.symbol)
         },
-        computed: {
-            count() {
-             return this.coin.count;
-            }
+        increment() {
+            this.$store.commit("increment", this.coin.symbol);
         },
-}
+        decrement() {
+            this.$store.commit("decrement", this.coin.symbol);
+        }, 
+    },
+    computed: {
+        count() {
+            return this.coin.count
+        }
+    }   
     
+}
+
 </script>
+
 
 <style>
 .coin-container {
@@ -51,6 +53,7 @@
     padding: 10px;
     margin: 5px auto
 }
+
 .quantity-container {
     display: flex;
 }
@@ -73,13 +76,5 @@
     border: none;
     border-radius: 2px;
     padding: 3px 7px;
-    font-size: 15px;
-}
-
-.update-btn {
-    background-color: #99DFCD;
-}
-.remove-btn {
-    background-color: #E72525;
 }
 </style>
