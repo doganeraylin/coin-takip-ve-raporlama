@@ -4,14 +4,11 @@
         <p>{{ coin.lastPrice }}</p>
         <p>{{ coin. weightedAvgPrice }}</p>
         <div class="quantity-container">
-            <p class="count">{{ count }}</p>
-            <div class="counter-container">
-                <button @click="increment" class="count-btn">+</button>
-                <button @click="decrement" class="count-btn">-</button>
-            </div>
+            <input type="number" v-model="coin.count" class="count"/>
         </div>
         <div class="btn-container">
             <button @click="removeCoin(coin.symbol)" class="remove-btn btn">remove</button>
+            <button @click="updateCoinCount()" class="update-btn btn">update</button>
         </div>
     </div>
 </template>
@@ -20,21 +17,19 @@
 
     export default {
         props: ['coin'],
+        data() {
+            return {
+                count: this.coin.count
+            }
+        },
         methods: {
             removeCoin(symbol) {
             this.$store.dispatch("removeAddedCoin", symbol);
             },
-            increment() {
-                this.$store.commit("increment", this.coin.symbol);
-            },
-            decrement() {
-                this.$store.commit("decrement", this.coin.symbol);
+            updateCoinCount() {
+                this.$store.dispatch("updateCoinCount", { symbol: this.coin.symbol, count: this.coin.count });
             }, 
-        },
-        computed: {
-            count() {
-             return this.coin.count;
-            }
+         
         },
 }
     
@@ -45,8 +40,7 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background-color: #EDE9D0;
-    border: 2px solid white;
+    background-color: #363636;
     border-radius: 5px;
     padding: 10px;
     margin: 5px auto
@@ -63,23 +57,35 @@
 }
 
 .count {
-    background-color: whitesmoke;
+    max-width: 30px;
+    background-color: #F1DFDE;
     padding: 5px 10px;
-    border-radius: 2px;
+    border: none;
+    margin-left: 20px;
 }
 
-.count-btn {
-    background-color: whitesmoke;
-    border: none;
-    border-radius: 2px;
-    padding: 3px 7px;
-    font-size: 15px;
+.coin-info-bar {
+    display: flex;
+    justify-content: space-around;
+    width: 400px;
+    margin-left: 5px;
 }
+
+.coin-info-bar p {
+    color:  #F1DFDE;
+    border: 2px solid #F1DFDE;
+    padding: 3px 7px;
+    border-radius: 5px;
+    opacity: 0.5;
+    margin-right: 5px;
+}
+
 
 .update-btn {
-    background-color: #99DFCD;
+    background-color: #A77FF9;
+
 }
 .remove-btn {
-    background-color: #E72525;
+    background-color: #E86A34;
 }
 </style>
