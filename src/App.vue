@@ -1,3 +1,4 @@
+
 <template>
   <div class="main-container" >
     <header class="header-container">
@@ -18,8 +19,6 @@
 <script>
 
 import PieChart from './components/PieChart.vue'
-import AddedCoin from './components/AddedCoin.vue';
-import NewCoin from './components/NewCoin.vue';
 import Portfolio from "./components/Portfolio.vue"
 import Modal from  "./components/Modal.vue"
 
@@ -30,6 +29,7 @@ export default {
     if(localStorage.addedCoinsArr) {
       this.$store.dispatch("loadAddedCoinsFromLocalStorage", JSON.parse(localStorage.addedCoinsArr))
     }
+ 
     setInterval(() => {
       this.$store.dispatch("loadCoins")
     }, 1200000);
@@ -49,8 +49,6 @@ export default {
   },
   components: {
     PieChart,
-    AddedCoin,
-    NewCoin,
     Portfolio,
     Modal
   },
@@ -77,6 +75,7 @@ export default {
 <style>
   .main-container {
     height: 100vh;
+    background-color: #363636;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   }
   .header-container {
@@ -95,8 +94,9 @@ export default {
     justify-content: space-around;
     margin-top: 50px;
   }
+  
   .btn {
-    background-color: #0043B1;
+    background-color: #2BC69D;
     color: white;
     border: none;
     padding: 10px;
@@ -109,4 +109,3 @@ export default {
     cursor: pointer;
   }
 </style>
-
