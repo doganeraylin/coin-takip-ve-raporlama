@@ -3,39 +3,27 @@
         <p>{{ coin.symbol }}</p>
         <p>{{ coin.lastPrice }}</p>
         <p>{{ coin.weightedAvgPrice }}</p>
-        <button @click="addNewCoin(coin)" class="btn">add</button>
+        <button @click="addCoin({symbol:coin.symbol, count:count})" class="btn">add</button>
         <div class="quantity-container">
-            <p class="count">{{ count }}</p>
-            <div class="counter-container">
-            <button @click="increment" class="count-btn">+</button>
-            <button @click="decrement" class="count-btn">-</button>
-            </div>
+            <input type="number" v-model="count" class="count"/>
         </div>
     </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 
     export default {
 
     props: ['coin'],
-    methods: {
-        addNewCoin(coin) {
-            coin.added = true
-            this.$store.commit("addingCoin", coin.symbol)
-        },
-        increment() {
-            this.$store.commit("increment", this.coin.symbol);
-        },
-        decrement() {
-            this.$store.commit("decrement", this.coin.symbol);
-        }, 
-    },
-    computed: {
-        count() {
-            return this.coin.count
+    data() {
+        return {
+            count: 1
         }
-    }   
+    },
+    methods: {
+        ...mapActions(["addCoin"]),
+    }, 
     
 }
 
