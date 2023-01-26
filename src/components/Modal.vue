@@ -2,6 +2,11 @@
     <div class="modal-container">
       <button class="close-btn" @click="closeModal">x</button>
         <input type="text" v-model="search" placeholder="Search" class="search-bar">
+        <div class="coin-info-bar">
+            <p>Symbol</p>
+            <p>Last Price</p>
+            <p>Weighted Avg Price</p>
+        </div>
         <div v-for="coin in allCoins" :key="coin.symbol">
           <div v-if="coin.added">
             <AddedCoin :coin="coin"></AddedCoin>
