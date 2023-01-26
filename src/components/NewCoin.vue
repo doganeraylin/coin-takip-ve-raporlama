@@ -35,9 +35,9 @@ import { mapActions } from 'vuex'
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background-color: #EDE9D0;
-    border: 2px solid white;
+    background-color: #363636;
     border-radius: 5px;
+    color: white;
     padding: 10px;
     margin: 5px auto
 }
