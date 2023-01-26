@@ -1,28 +1,36 @@
 <template>
   <div>
-  <Bar :chart-data="chartData" />
   <canvas id="myChart" width="400" height="400"></canvas>
   </div>
 </template>
 
 <script>
 
-import { Bar } from 'vue-chartjs'
 import { Chart} from 'chart.js'
+import { mapState } from 'vuex'
 
 export default {
-  data() {
-    return {
-      chartData: {
-        labels: [ 'January', 'February', 'March'],
+
+  computed: {
+    ...mapState([
+      "addedCoinsArr"
+    ]),
+    chartData() {
+      const colors = ['#f87979', '#f9a65a', '#fcc419', '#fcd917', '#f5e8c8', '#f3e5ab'];
+      return {
+        labels: this.addedCoinsArr.map(coin => coin.symbol),
         datasets: [
           {
             label: 'Data One',
-            backgroundColor: '#f87979',
-            data: [40, 20, 12]
+            backgroundColor: this.addedCoinsArr.map((coin, index) => colors[index % colors.length]),
+            data: this.addedCoinsArr.map(coin => coin.count),
           }
         ]
-      },
+      }
+    }
+  },
+  data() {
+    return {
       options: {
       title: {
         display: true,
@@ -32,28 +40,31 @@ export default {
     }
   },
   mounted() {
-    console.log("mounted")
     const ctx = document.getElementById("myChart")
-    const myChart = new Chart(ctx, {
-    type: 'bar',
+    this.myChart = new Chart(ctx, {
+    type: 'pie',
     data: {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
       datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
+        label: '# of coins',
+        data: this.chartData,
         borderWidth: 1
       }]
     },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
-    }
   });
-  myChart;
+  },
+  watch: {
+    chartData: {
+      handler() {
+        this.myChart.data = this.chartData;
+        this.myChart.update();
+      },
+      deep: true
+    }   
+  },
   }
-}
 </script>
 
+
+<style>
+
+</style>
